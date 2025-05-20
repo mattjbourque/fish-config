@@ -1,0 +1,2 @@
+.*.sw?
+conf.d/ssh_agent.fish
