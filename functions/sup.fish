@@ -8,6 +8,7 @@ function sup
     for subdir in (find $dir -type d)
       for file in $uploads
 	if test -e $subdir/$file.pdf
+	  echo $subdir/$file.pdf -\> 118math_Su25:(basename $dir)/(basename $subdir)-$file.pdf
 	  rclone --quiet --config /home/mbourque/Dropbox/Teaching/Utilities/rclone.conf copyto $subdir/$file.pdf 118math_Su25:(basename $dir)/(basename $subdir)-$file.pdf
 	end
       end
