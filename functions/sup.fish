@@ -1,7 +1,7 @@
 function sup
 
   set uploads questions up_solutions slides
-  set directories /home/mbourque/Dropbox/Teaching/118math_Su25/Classwork/ /home/mbourque/Dropbox/Teaching/118math_Su25/Slides/ /home/mbourque/Dropbox/Teaching/118math_Su25/Quizzes/
+  set directories /home/mbourque/Dropbox/Teaching/118math_Su25/Classwork/ /home/mbourque/Dropbox/Teaching/118math_Su25/Slides/ /home/mbourque/Dropbox/Teaching/118math_Su25/Quizzes/ /home/mbourque/Dropbox/Teaching/118math_Su25/Exams/
 
   for dir in $directories
     rclone --config /home/mbourque/Dropbox/Teaching/Utilities/rclone.conf mkdir 118math_Su25:(basename $dir)
