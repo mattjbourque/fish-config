@@ -70,7 +70,11 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 			    end
 			end
 		    end
+		else
+		    echo Use rclone config to set up the remote.
 		end
+	    else
+		echo $argv is not a course found in the Teaching directory.
 	    end
 	end
     end
