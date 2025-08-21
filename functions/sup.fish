@@ -64,8 +64,8 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 				if test -e $subdir/$file.pdf
 				    # TODO test for quiet flag here
 				    # TODO set up a flag for dry run and test here
-				    echo $subdir/$file.pdf -\> 118math_Su25:(basename $dir)/(basename $subdir)-$file.pdf
-				    # rclone $rclone_quiet_arg --config $rclone_config copyto $subdir/$file.pdf 118math_Su25:(basename $dir)/(basename $subdir)-$file.pdf
+				    echo $subdir/$file.pdf -\> $course:(basename $dir)/(basename $subdir)-$file.pdf
+				    rclone $rclone_quiet_arg --config $rclone_config copyto $subdir/$file.pdf $course:(basename $dir)/(basename $subdir)-$file.pdf
 				end
 			    end
 			end
