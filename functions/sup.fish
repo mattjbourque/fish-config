@@ -11,7 +11,7 @@ sup - Sakai upload
 
 Use this to upload course documents to Sakai.
 
-The script will upload specified files in specified directories.
+For each specified directory in the course directory, the script will update a directory of symbolic links and then use rclone to sync these directories with Sakai.
 For example, the local file 
      course/Classwork/01introduction/questions.pdf
 is uploaded to
@@ -51,25 +51,24 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 			/home/mbourque/Dropbox/Teaching/$course/Exams/
 
 		    # Determine the filenames that will be uploaded for each course in the directories.
-		    # This should probably be configurable.
-		    # Now we assume all the files to be uploaded are PDFs and add the .pdf later.
-
-		    set uploads questions up_solutions slides
+		    # This should probably be configurable for now it is hardcoded as up_solutions.pdf, questions.pdf, and slides.pdf
 
 		    for dir in $directories
-			# TODO: test and only make the directory if it doesn't exist <01-07-25, mattjbourque@gmail.com> #
-			rclone --config /home/mbourque/Dropbox/Teaching/Utilities/rclone.conf mkdir 118math_Su25:(basename $dir)
-			for subdir in (find $dir -type d)
-			    for file in $uploads
-				if test -e $subdir/$file.pdf
-				    # TODO test for quiet flag here
-				    # TODO set up a flag for dry run and test here
-				    echo $subdir/$file.pdf -\> $course:(basename $dir)/(basename $subdir)-$file.pdf
-				    rclone $rclone_quiet_arg --config $rclone_config copyto $subdir/$file.pdf $course:(basename $dir)/(basename $subdir)-$file.pdf
-				end
-			    end
+			if test -e $dir
+			   cd $dir
+			   for file in */up_solutions.pdf */questions.pdf */slides.pdf
+			       set linkname $(path dirname $file)-$(path basename $file)
+			       if test ! -L ~/Dropbox/Teaching/$course/.Sakai/$(path basename $dir)/$linkname
+				   ln -s $(path resolve $file) ~/Dropbox/Teaching/$course/.Sakai/$(path basename $dir)/$linkname
+			       end
+			   end
 			end
-		    end
+		    end #We've updated the links
+		    # Syncing with Sakai 
+
+		    # Delete orphaned links
+		    find ~/Dropbox/Teaching/$course/.Sakai -xtype l -delete
+		    rclone --config $rclone_config sync -L ~/Dropbox/Teaching/$course/.Sakai $course:
 		else
 		    echo Use rclone config to set up the remote.
 		end
