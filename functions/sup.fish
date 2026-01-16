@@ -10,8 +10,14 @@ function sup
 sup - Sakai upload
 
 Use this to upload course documents to Sakai.
+The script expects you to use a course string of the format [num][sub]_[sem][yr], where [num] is the course number, [sub] is <math> or <stat>,  [sem] is <S>, <F>, or <Su>, and [yr] is the last two digits of the year.
+This course string should be the name of the rclone remote for the course (Sakai webdav), and also the name of the local directory containing the course files.
 
 For each specified directory in the course directory, the script will update a directory of symbolic links and then use rclone to sync these directories with Sakai.
+The symbolic links will be stored in <course_string>/.Sakai/[dir] (This should be customizable but is now hardcoded.)
+
+The list of synced directories within each course directory, and the filnames that get synced, are now hardcoded and should probably be configurable.
+
 For example, the local file 
      course/Classwork/01introduction/questions.pdf
 is uploaded to
@@ -48,6 +54,7 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 			/home/mbourque/Dropbox/Teaching/$course/Classwork/ \
 			/home/mbourque/Dropbox/Teaching/$course/Slides/ \
 			/home/mbourque/Dropbox/Teaching/$course/Quizzes/ \
+			/home/mbourque/Dropbox/Teaching/$course/Homework/ \
 			/home/mbourque/Dropbox/Teaching/$course/Exams/
 
 		    # Determine the filenames that will be uploaded for each course in the directories.
@@ -58,6 +65,7 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 			   cd $dir
 			   for file in */up_solutions.pdf */questions.pdf */slides.pdf
 			       set linkname $(path dirname $file)-$(path basename $file)
+			       # TODO: test for directory and make it if it doesn't exist #
 			       if test ! -L ~/Dropbox/Teaching/$course/.Sakai/$(path basename $dir)/$linkname
 				   ln -s $(path resolve $file) ~/Dropbox/Teaching/$course/.Sakai/$(path basename $dir)/$linkname
 			       end
