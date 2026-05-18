@@ -42,7 +42,7 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 	echo You must specify a course.
     else
 	for course in $argv
-	    if test -O ~/Dropbox/Teaching/$course # This is a real course, update its files.
+	    if test -e ~/Dropbox/Teaching/$course # This is a real course, update its files.
 
 		if contains $course (string replace ':' '' (rclone --config $rclone_config listremotes))
 
@@ -55,6 +55,8 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 			/home/mbourque/Dropbox/Teaching/$course/Slides/ \
 			/home/mbourque/Dropbox/Teaching/$course/Quizzes/ \
 			/home/mbourque/Dropbox/Teaching/$course/Homework/ \
+			/home/mbourque/Dropbox/Teaching/$course/Lecture/ \
+			/home/mbourque/Dropbox/Teaching/$course/Examples/ \
 			/home/mbourque/Dropbox/Teaching/$course/Exams/
 
 		    # Determine the filenames that will be uploaded for each course in the directories.
@@ -62,21 +64,22 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 
 		    for dir in $directories
 			if test -e $dir
-			   cd $dir
-			   for file in */up_solutions.pdf */questions.pdf */slides.pdf
+			   pushd $dir
+			   for file in */up_solutions.pdf */questions.pdf */slides.pdf */lecture.pdf */example.R
 			       set linkname $(path dirname $file)-$(path basename $file)
 			       # TODO: test for directory and make it if it doesn't exist #
 			       if test ! -L ~/Dropbox/Teaching/$course/.Sakai/$(path basename $dir)/$linkname
 				   ln -s $(path resolve $file) ~/Dropbox/Teaching/$course/.Sakai/$(path basename $dir)/$linkname
 			       end
 			   end
+			   popd
 			end
 		    end #We've updated the links
 		    # Syncing with Sakai 
 
 		    # Delete orphaned links
 		    find ~/Dropbox/Teaching/$course/.Sakai -xtype l -delete
-		    rclone --config $rclone_config sync -L ~/Dropbox/Teaching/$course/.Sakai $course:
+		    rclone --config $rclone_config -v sync -L ~/Dropbox/Teaching/$course/.Sakai $course:
 		else
 		    echo Use rclone config to set up the remote.
 		end
