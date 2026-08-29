@@ -57,7 +57,7 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 			/home/mbourque/Dropbox/Teaching/$course/Homework/ \
 			/home/mbourque/Dropbox/Teaching/$course/Lecture/ \
 			/home/mbourque/Dropbox/Teaching/$course/Examples/ \
-			/home/mbourque/Dropbox/Teaching/$course/Exams/
+		/home/mbourque/Dropbox/Teaching/$course/Exams/
 
 		    # Determine the filenames that will be uploaded for each course in the directories.
 		    # This should probably be configurable for now it is hardcoded as up_solutions.pdf, questions.pdf, and slides.pdf
@@ -65,7 +65,7 @@ This script will attempt to make (e.g.) course-remote:Classwork if it doesn't ex
 		    for dir in $directories
 			if test -e $dir
 			   pushd $dir
-			   for file in */up_solutions.pdf */questions.pdf */slides.pdf */lecture.pdf */example.R
+			   for file in */up_solutions.pdf */questions.pdf */slides.pdf */lecture.pdf */example.R */notebook.Rmd */data*.csv
 			       set linkname $(path dirname $file)-$(path basename $file)
 			       # TODO: test for directory and make it if it doesn't exist #
 			       if test ! -L ~/Dropbox/Teaching/$course/.Sakai/$(path basename $dir)/$linkname
